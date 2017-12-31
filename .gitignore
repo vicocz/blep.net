@@ -1,0 +1,12 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/Blep.Contract/bin/Debug
+/Blep.Contract/obj/Debug
+/Blep.Diag/bin/Debug
+/Blep.Diag/obj/Debug
+/Blep.Framework/bin/Debug
+/Blep.Framework/obj/Debug
+/packages
+/.vs
