@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace Blep.Framework.Registry
 {
-    public class WellKnownServices : WellKnownEntityBase<Guid, IServiceInfo>
+    public class WellKnownServices : WellKnownEntityBase<Guid, IServiceTemplate>
     {
         static WellKnownServices()
         {
@@ -18,15 +18,15 @@ namespace Blep.Framework.Registry
         /// <summary>
         /// Default factory
         /// </summary>
-        public static readonly IFactory<Guid, IServiceInfo> Default;
+        public static readonly IFactory<Guid, IServiceTemplate> Default;
 
-        public WellKnownServices(IEnumerable<IServiceInfo> knownServices)
+        public WellKnownServices(IEnumerable<IServiceTemplate> knownServices)
             : base (knownServices.ToDictionary(e => e.Uuid, e => e))
         {
         }
 
-        public static readonly IServiceInfo GenericAccess = new WellKnownService("GenericAccess", 0x1800);
+        public static readonly IServiceTemplate GenericAccess = new WellKnownService("GenericAccess", 0x1800);
 
-        public static readonly IServiceInfo DeviceInformation = new WellKnownService("DeviceInformation", 0x180A);
+        public static readonly IServiceTemplate DeviceInformation = new WellKnownService("DeviceInformation", 0x180A);
     }
 }

@@ -9,9 +9,9 @@ namespace Blep.Framework.Extension
         public static IServiceInfo ToServiceInfo(this GattDeviceService service)
         {
             // use default factory to recognize known services
-            if (WellKnownServices.Default.TryCreate(service.Uuid, out IServiceInfo value))
+            if (WellKnownServices.Default.TryCreate(service.Uuid, out IServiceTemplate template))
             {
-                return value;
+                return new KnownServiceInfo(template);
             }
 
             // use generic service

@@ -7,11 +7,19 @@ namespace Blep.Contract.Model
     public sealed class GeneralCharacteristicInfo : IdentifiableModelBase, ICharacteristicInfo
     {
         public string Name { get; }
+        
+        public IPresentationFormat PresentationFormat { get; }
 
-        public IPresentationFormat DefaultPresentationFormat => WellKnownPresentationFormats.Unknown;
+        public IServiceInfo Service { get; }
 
-        public GeneralCharacteristicInfo(Guid uuid) : base (uuid)
+        public CharacteristicProperties Properties { get; }
+
+        public GeneralCharacteristicInfo(IServiceInfo service, Guid uuid, CharacteristicProperties properties, IPresentationFormat presentationFormat) : base (uuid)
         {
+            Service = service ?? throw new ArgumentNullException(nameof(service));
+            PresentationFormat = presentationFormat ?? WellKnownPresentationFormats.Unknown;
+            Properties = properties;
+
             // derive name from UUID
             Name = GetDefaultName();
         }

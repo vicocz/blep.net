@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace Blep.Framework.Registry
 {
-    public class WellKnownCharacteristics : WellKnownEntityBase<Guid, ICharacteristicInfo>
+    public class WellKnownCharacteristics : WellKnownEntityBase<Guid, ICharacteristicTemplate>
     {
         static WellKnownCharacteristics()
         {
@@ -18,15 +18,15 @@ namespace Blep.Framework.Registry
         /// <summary>
         /// Default factory
         /// </summary>
-        public static readonly IFactory<Guid, ICharacteristicInfo> Default;
+        public static readonly IFactory<Guid, ICharacteristicTemplate> Default;
 
-        public WellKnownCharacteristics(IEnumerable<ICharacteristicInfo> knownCharcteristics)
+        public WellKnownCharacteristics(IEnumerable<ICharacteristicTemplate> knownCharcteristics)
             : base(knownCharcteristics.ToDictionary(e => e.Uuid, e => e))
         {
         }
 
         // GenericAccess
-        public static readonly ICharacteristicInfo DeviceName =
+        public static readonly ICharacteristicTemplate DeviceName =
             new WellKnownCharacteristic
             (
                 "DeviceName",
@@ -34,7 +34,7 @@ namespace Blep.Framework.Registry
                 WellKnownPresentationFormats.Utf8
             );
 
-        public static readonly ICharacteristicInfo Appearance =
+        public static readonly ICharacteristicTemplate Appearance =
             new WellKnownCharacteristic
             (
                 "Appearance",
@@ -42,35 +42,35 @@ namespace Blep.Framework.Registry
                 WellKnownPresentationFormats.UInt16
             );
 
-        public static readonly ICharacteristicInfo ModelNumberString =
+        public static readonly ICharacteristicTemplate ModelNumberString =
             new WellKnownCharacteristic
             (
                 "ModelNumberString",
                 0x2A24,
                 WellKnownPresentationFormats.Utf8
             );
-        public static readonly ICharacteristicInfo FirmwareRevisionString =
+        public static readonly ICharacteristicTemplate FirmwareRevisionString =
             new WellKnownCharacteristic
             (
                 "FirmwareRevisionString",
                 0x2A26,
                 WellKnownPresentationFormats.Utf8
             );
-        public static readonly ICharacteristicInfo HardwareRevisionString =
+        public static readonly ICharacteristicTemplate HardwareRevisionString =
             new WellKnownCharacteristic
             (
                 "HardwareRevisionString",
                 0x2A27,
                 WellKnownPresentationFormats.Utf8
             );
-        public static readonly ICharacteristicInfo SoftwareRevisionString =
+        public static readonly ICharacteristicTemplate SoftwareRevisionString =
             new WellKnownCharacteristic
             (
                 "SoftwareRevisionString",
                 0x2A28,
                 WellKnownPresentationFormats.Utf8
             );
-        public static readonly ICharacteristicInfo ManufacturerNameString =
+        public static readonly ICharacteristicTemplate ManufacturerNameString =
             new WellKnownCharacteristic
             (
                 "ManufacturerNameString",

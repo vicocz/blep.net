@@ -33,18 +33,18 @@ namespace Blep.Framework.Discovery
                 taskCompletionSource = new TaskCompletionSource<bool>();
             }
 
-            public Task<IEnumerable<DiscoveredDevice>> Start(TimeSpan maxExecutionTime)
+            public Task<IEnumerable<IDeviceInfo>> Start(TimeSpan maxExecutionTime)
             {
                 StartDeviceWatcher();
 
-                return Task.Factory.StartNew<IEnumerable<DiscoveredDevice>>(() =>
+                return Task.Factory.StartNew<IEnumerable<IDeviceInfo>>(() =>
                    {
                        taskCompletionSource.Task.Wait(maxExecutionTime);
                        return GetResults();
                    });
             }
 
-            private IEnumerable<DiscoveredDevice> GetResults()
+            private IEnumerable<IDeviceInfo> GetResults()
             {
                 lock (lockItem)
                 {
@@ -52,24 +52,6 @@ namespace Blep.Framework.Discovery
                         Select(d => d.ToDiscoveredDevice())
                         .ToList();
                 }
-            }
-
-            public IEnumerable<DiscoveredDevice> EnumerateDevices(TimeSpan timeout)
-            {
-                try
-                {
-
-                    StartDeviceWatcher();
-
-                    var result = taskCompletionSource.Task.Wait(timeout);
-                }
-
-                finally
-                {
-                    StopDeviceWatcher();
-                }
-
-                return GetResults();
             }
 
             private void StartDeviceWatcher()

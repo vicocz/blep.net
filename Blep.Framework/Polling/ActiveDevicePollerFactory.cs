@@ -11,9 +11,9 @@ namespace Blep.Framework.Polling
             return new SimpleDevicePoller(service, characteristic);
         }
 
-        public IActiveDevicePoller Create(DeviceAttribute attribute)
+        public IActiveDevicePoller Create(ICharacteristicInfo characteristic)
         {
-            return new SimpleDevicePoller(attribute.Service.Uuid, attribute.Characteristic.Uuid, attribute.Characteristic.DefaultPresentationFormat);
+            return new SimpleDevicePoller(characteristic.Service.Uuid, characteristic.Uuid, characteristic.PresentationFormat);
         }
     }
 }

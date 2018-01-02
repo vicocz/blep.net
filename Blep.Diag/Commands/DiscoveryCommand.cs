@@ -1,9 +1,7 @@
-﻿using Blep.Contract.Model;
-using Blep.Framework.Discovery;
+﻿using Blep.Framework.Discovery;
+using Blep.Framework.Extension;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace Blep.Diag.Commands
 {
@@ -13,7 +11,7 @@ namespace Blep.Diag.Commands
 
         public void Execute()
         {
-            Console.Write("BLE device discovery in progress...");
+            Console.Write("Bluetooth Low Energy device discovery in progress...");
 
             var factory = new DiscoveryFactory().Create();
             var discoveredDevices = factory.EnumerateDevicesAsync(DefaultTimeout).Result.ToList();
@@ -23,7 +21,8 @@ namespace Blep.Diag.Commands
 
             foreach (var device in discoveredDevices)
             {
-                Console.WriteLine($"Device: {device.Name}, Id: '{device.Id}', Address={device.Address}");
+                var blueDress = device.BluetoothAddress.ToBluetoothAddress();
+                Console.WriteLine($"Device: {device.Name}, Id: {device.Id}, Address={blueDress}");
             }
         }
     }

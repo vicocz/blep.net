@@ -1,9 +1,9 @@
 ﻿using Blep.Contract;
 using Blep.Contract.Model;
+using Blep.Framework.Extension;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Windows.Devices.Bluetooth;
 using Windows.Devices.Bluetooth.GenericAttributeProfile;
@@ -12,12 +12,12 @@ namespace Blep.Framework.Discovery
 {
     public partial class SimpleDiscovery : IDeviceDiscovery
     {
-        public IEnumerable<DiscoveredDevice> EnumerateDevices(TimeSpan maxExecutionTime)
+        public IEnumerable<IDeviceInfo> EnumerateDevices(TimeSpan maxExecutionTime)
         {
             return EnumerateDevicesAsync(maxExecutionTime).Result;
         }
 
-        public async Task<IEnumerable<DiscoveredDevice>> EnumerateDevicesAsync(TimeSpan maxExecutionTime)
+        public async Task<IEnumerable<IDeviceInfo>> EnumerateDevicesAsync(TimeSpan maxExecutionTime)
         {
             using (var task = new DiscoveryTask())
             {
@@ -25,29 +25,22 @@ namespace Blep.Framework.Discovery
             }
         }
 
-        public DiscoveredDevice EnumerateResources(string deviceId)
+        public ResourceEnumerationResult EnumerateResources(string deviceId)
         {
             return EnumerateResourcesAsync(deviceId).Result;
         }
 
-        public async Task<DiscoveredDevice> EnumerateResourcesAsync(string deviceId)
+        public async Task<ResourceEnumerationResult> EnumerateResourcesAsync(string deviceId)
         {
             using (var bleDevice = await BluetoothLEDevice.FromIdAsync(deviceId))
             {
                 if (bleDevice == null)
                 {
-                    return null;
+                    return new ResourceEnumerationResult(ResourceEnumerationResult.EnumerationStatus.ProtocolError);
                 }
 
-                var discoveredAttributes = new List<DeviceAttribute>();
-                var device = new DiscoveredDevice
-                {
-                    Id = bleDevice.DeviceId,
-                    Name = bleDevice.Name,
-                    Address = bleDevice.BluetoothAddress.ToString(),
-
-                    Attributes = discoveredAttributes,
-                };
+                var discoveredCharacteristics = new List<ICharacteristicInfo>();
+                var device = bleDevice.ToDeviceInfo(discoveredCharacteristics);
 
                 // Note: BluetoothLEDevice.GattServices property will return an empty list for unpaired devices. 
                 // For all uses we recommend using the GetGattServicesAsync method.
@@ -57,25 +50,27 @@ namespace Blep.Framework.Discovery
                 // subscribe to the GattServicesChanged event.
                 GattDeviceServicesResult result = await bleDevice.GetGattServicesAsync(BluetoothCacheMode.Uncached);
 
-                if (result.Status == GattCommunicationStatus.Success)
+                if (result.Status != GattCommunicationStatus.Success)
                 {
-                    foreach (var service in result.Services)
+                    var status = result.Status.ToEnumerationStatus();
+                    return new ResourceEnumerationResult(device, status);
+                }
+
+                foreach (var service in result.Services)
+                {
+                    var gattCharacteristicsResult = await service.GetCharacteristicsAsync();
+
+                    if (result.Status != GattCommunicationStatus.Success)
                     {
-                        var gattCharacteristicsResult = await service.GetCharacteristicsAsync();
-
-                        foreach (var characteristic in gattCharacteristicsResult.Characteristics)
-                        {
-                            var attribute = characteristic.ToDeviceAttribute();
-                            discoveredAttributes.Add(attribute);
-                        }
+                        var status = gattCharacteristicsResult.Status.ToEnumerationStatus();
+                        return new ResourceEnumerationResult(device, status);
                     }
-                }
-                else
-                {
-                    //rootPage.NotifyUser("Device unreachable", NotifyType.ErrorMessage);
+
+                    var servicChars = gattCharacteristicsResult.Characteristics.Select(ch => ch.ToCharacteristicInfo());
+                    discoveredCharacteristics.AddRange(servicChars);
                 }
 
-                return device;
+                return new ResourceEnumerationResult(device, ResourceEnumerationResult.EnumerationStatus.Success);
             }
         }
     }

@@ -1,5 +1,7 @@
 ﻿using Blep.Contract.Model;
+using Blep.Framework.Extension;
 using System.Collections.Generic;
+using Windows.Devices.Bluetooth;
 using Windows.Devices.Enumeration;
 
 namespace Blep.Framework
@@ -8,13 +10,17 @@ namespace Blep.Framework
     {
         internal static DiscoveredDevice ToDiscoveredDevice(this DeviceInformation device)
         {
+            // convert DEVICE ID - NEED newer W10
+            //var bluetoothDeviceId = BluetoothDeviceId.FromId(device.Id); 
+
+            var deviceAddress = device.Properties.ToProperty<string>(WellKnownProperties.AepDeviceAddress);
+
             return new DiscoveredDevice
             {
+                //Id = bluetoothDeviceId.Id,
                 Id = device.Id,
                 Name = device.Name,
-                Address = device.Properties.ToProperty<string>(WellKnownProperties.AepDeviceAddress),
-
-                Attributes = new DeviceAttribute[0],
+                BluetoothAddress = deviceAddress.ToBluetoothAddress(),
             };
         }
 

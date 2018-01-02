@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.Linq;
+using System.Net.NetworkInformation;
 
 namespace Blep.Framework.Extension
 {
@@ -16,6 +17,43 @@ namespace Blep.Framework.Extension
         };
 
         private static readonly IFormatProvider invariantProvider = CultureInfo.InvariantCulture;
+
+        public static ulong ToBluetoothAddress(this string physicalAddress)
+        {
+            if (physicalAddress.Length != 17)
+            {
+                throw new FormatException($"The specified address {physicalAddress} is not a valid Bluetooth address.");
+            }
+
+            if (physicalAddress.IndexOf(":", StringComparison.Ordinal) > -1)
+            {
+                return ToBluetoothAddress(physicalAddress, ':');
+            }
+
+            throw new ArgumentException(nameof(physicalAddress));
+        }
+
+        private static ulong ToBluetoothAddress(string physicalAddress, char separator)
+        {
+            byte[] bytes = new byte[8];
+            string[] parts = physicalAddress.Split(separator);
+            for (int index = 0; index < 6; index++)
+            {
+                var part = parts[5 - index];
+                if (!byte.TryParse(part, NumberStyles.HexNumber, invariantProvider, out byte value))
+                {
+                    throw new FormatException($"Failed to parse part '{part}' of Bluetooth address '{physicalAddress}");
+                }
+                bytes[index] = value;
+            }
+            return BitConverter.ToUInt64(bytes, 0);
+        }
+
+        public static string ToBluetoothAddress(this ulong bluetoothAddress)
+        {
+            return bluetoothAddress.ToString("X6", invariantProvider);
+
+        }
 
         /// <summary>
         /// Converts standard 128bit UUID to the well known 32bit UUID
@@ -44,6 +82,11 @@ namespace Blep.Framework.Extension
         public static string ToHexString(this ushort value)
         {
             return value.ToString("X4", invariantProvider);
+        }
+
+        public static string ToHexString(this uint value)
+        {
+            return value.ToString("X8", invariantProvider);
         }
 
         public static string ToInvariantString(this ushort value)

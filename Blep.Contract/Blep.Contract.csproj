@@ -42,11 +42,14 @@
   <ItemGroup>
     <Compile Include="IActiveDevicePoller.cs" />
     <Compile Include="IFactory.cs" />
-    <Compile Include="Model\DeviceAttribute.cs" />
-    <Compile Include="Model\DiscoveredDevice.cs" />
     <Compile Include="IDeviceDiscovery.cs" />
+    <Compile Include="Model\CharacteristicProperties.cs" />
+    <Compile Include="ResourceEnumerationResult.cs" />
+    <Compile Include="Model\ICharacteristicTemplate.cs" />
     <Compile Include="Model\ICharacteristicInfo.cs" />
+    <Compile Include="Model\IDeviceInfo.cs" />
     <Compile Include="Model\IPresentationFormat.cs" />
+    <Compile Include="Model\IServiceTemplate.cs" />
     <Compile Include="Model\IServiceInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -7,10 +7,10 @@ namespace Blep.Contract
 {
     public interface IDeviceDiscovery
     {
-        IEnumerable<DiscoveredDevice> EnumerateDevices(TimeSpan maxExecutionTime);
-        Task<IEnumerable<DiscoveredDevice>> EnumerateDevicesAsync(TimeSpan maxExecutionTime);
+        IEnumerable<IDeviceInfo> EnumerateDevices(TimeSpan maxExecutionTime);
+        Task<IEnumerable<IDeviceInfo>> EnumerateDevicesAsync(TimeSpan maxExecutionTime);
 
-        DiscoveredDevice EnumerateResources(string deviceId);
-        Task<DiscoveredDevice> EnumerateResourcesAsync(string deviceId);
+        ResourceEnumerationResult EnumerateResources(string deviceId);
+        Task<ResourceEnumerationResult> EnumerateResourcesAsync(string deviceId);
     }
 }

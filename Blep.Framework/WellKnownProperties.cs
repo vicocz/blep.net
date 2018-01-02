@@ -18,6 +18,6 @@ namespace Blep.Framework
             "System.Devices.Aep.Bluetooth.Le.IsConnectable"
         };
 
-        public static readonly string AepDeviceAddress = "Aep.DeviceAddress";
+        public static readonly string AepDeviceAddress = "System.Devices.Aep.DeviceAddress";
     }
 }

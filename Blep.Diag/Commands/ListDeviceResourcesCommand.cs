@@ -1,5 +1,6 @@
 ﻿using Blep.Contract.Model;
 using Blep.Framework.Discovery;
+using Blep.Framework.Extension;
 using System;
 
 namespace Blep.Diag.Commands
@@ -18,30 +19,50 @@ namespace Blep.Diag.Commands
             Console.Write($"Listing resources of device Id: {_deviceId} ...");
 
             var discovery = new DiscoveryFactory().Create();
-            var deviceInfo = discovery.EnumerateResources(_deviceId);
+            var deviceResult = discovery.EnumerateResources(_deviceId);
 
             Console.WriteLine();
 
-            Dump(deviceInfo);
+            if (deviceResult.Status != ResourceEnumerationResult.EnumerationStatus.Success)
+            {
+                Console.WriteLine($"Operation has failed due to status: {deviceResult.Status}");
+
+                if (deviceResult.Device != null)
+                {
+                    DumpDevice(deviceResult.Device);
+                }
+            }
+            else
+            {
+                Dump(deviceResult.Device);
+            }            
         }
 
-        private void Dump(DiscoveredDevice device)
+        private void DumpDevice(IDeviceInfo device)
         {
+            var blueDress = device.BluetoothAddress.ToBluetoothAddress();
+
             Console.WriteLine($"Device name: {device.Name}");
             Console.WriteLine($"Device ID: {device.Id}");
-            Console.WriteLine($"Device address: {device.Address}");
+            Console.WriteLine($"Device address: {blueDress}");
+        }
 
-            Console.WriteLine($"Device attributes: ({device.Attributes.Count})");
+        private void Dump(IDeviceInfo device)
+        {
+            DumpDevice(device);
 
-            foreach (var attribute in device.Attributes)
+            Console.WriteLine($"Device attributes: ({device.Characteristics.Count})");
+
+            foreach (var attribute in device.Characteristics)
             {
                 Dump(attribute);
             }
         }
 
-        private void Dump(DeviceAttribute attribute)
+        private void Dump(ICharacteristicInfo attribute)
         {
-            Console.WriteLine($"  {attribute.Service.Name}.{attribute.Characteristic.Name}");
+            var formatedProperties = attribute.Properties.ToString();
+            Console.WriteLine($"  {attribute.Service.Name}.{attribute.Name} [{formatedProperties}]");
         }
     }
 }

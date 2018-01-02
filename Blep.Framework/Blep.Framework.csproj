@@ -54,14 +54,20 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Extension\BluetoothLEDeviceExtensions.cs" />
     <Compile Include="Extension\ConvertExtensions.cs" />
     <Compile Include="Extension\DeviceInformationExtensions.cs" />
     <Compile Include="Discovery\DiscoveryFactory.cs" />
     <Compile Include="Discovery\SimpleDiscovery.cs" />
     <Compile Include="Discovery\SimpleDiscovery.DiscoveryTask.cs" />
     <Compile Include="Extension\GattCharacteristicExtensions.cs" />
+    <Compile Include="Extension\GattCommunicationStatusExtensions.cs" />
     <Compile Include="Extension\GattReadResultExtensions.cs" />
     <Compile Include="Extension\GattDeviceServiceExtensions.cs" />
+    <Compile Include="Model\KnownServiceInfo.cs" />
+    <Compile Include="Model\KnownCharacteristicInfo.cs" />
+    <Compile Include="Model\ListResourcesDevice.cs" />
+    <Compile Include="Model\DiscoveredDevice.cs" />
     <Compile Include="Model\GeneralCharacteristicInfo.cs" />
     <Compile Include="Model\IdentifiableModelBase.cs" />
     <Compile Include="Polling\ActiveDevicePollerFactory.cs" />
